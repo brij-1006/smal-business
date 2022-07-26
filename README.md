@@ -28,7 +28,7 @@
 * Update database connection URL for mongo inside file config->default.ts
 * RUN docker-compose up -d --build
 * RUN  yarn build
-* RUN  yarn dev
+* RUN  yarn dev or yarn start:dev
 
 Note: You will need Docker installed locally if you want to test your Docker configutation
 
