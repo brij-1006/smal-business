@@ -25,9 +25,10 @@ import { createProductRuleSchema } from "./schema/product-rule.schema";
 // product cart
 import { getCartItemsHandler } from "./controller/product-cart.controller";
 import { CreateProductCartInput } from "./schema/product-cart.schema";
-import {  createPCartHandler,} from "./controller/pcart.controller";
+import {  createPCartHandler, getPCartDiscountHandler} from "./controller/pcart.controller";
 import { createPCartSchema } from "./schema/pcart.schema";
 import { createPCartAddSchema } from "./schema/pcart-add.schema";
+import { CreatePDiscountCartInput } from "./schema/pdiscount-cart.schema";
 /**** Product cart end***/
 
 import { 
@@ -174,6 +175,35 @@ function routes(app: Express) {
    */
 
    app.post("/api/add-cart/:customerId", validateResource(createPCartAddSchema), createPCartHandler);
+
+
+  /**
+   * @openapi
+   * '/api/discount-cart':  
+   *  post:
+   *     tags:
+   *     - Product Cart
+   *     summary: get provision wraper discountof  a Cart
+   *     requestBody:
+   *      required: true
+   *      content:
+   *        application/json:
+   *           schema:
+   *              $ref: '#/components/schemas/CreatePDiscountCartInput'
+   *     responses:
+   *      200:
+   *        description: Success
+   *        content:
+   *          application/json:
+   *            schema:
+   *              $ref: '#/components/schemas/CreatePDiscountCartResponse'
+   *      409:
+   *        description: Conflict
+   *      400:
+   *        description: Bad request
+   */
+
+   app.post("/api/discount-cart/", validateResource(CreatePDiscountCartInput), getPCartDiscountHandler);
 
 
   /**

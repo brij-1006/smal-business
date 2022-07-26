@@ -6,6 +6,12 @@ export interface PCartInputType {
   status: number,
 }
 
+export interface PDiscountCartInput {
+  is_provision: string,
+  is_provision_val: number,
+}
+
+
 export interface PCartDocument extends PCartInputType, mongoose.Document {
   createdAt: Date;
   updatedAt: Date;

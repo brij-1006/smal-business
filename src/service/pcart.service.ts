@@ -79,6 +79,8 @@ export async function getProductsCartById(
 }
 
 
+
+
 export async function isCartActive(customerId : string) {
   const metricsLabels = {
     operation: "isCartActive",

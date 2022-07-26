@@ -3,18 +3,18 @@ import dayjs from "dayjs";
 import logger from "../utils/logger";
 
 import { CreatePCartAddInput } from "../schema/pcart-add.schema";
-
+import { CreatePDiscountCartInput } from "../schema/pdiscount-cart.schema";
 
 import {
   createPCart,
   isCartActive,
   getProductsCartById,
-  findPCart
 } from "../service/pcart.service";
 
 
 import {
-  createProductCart
+  createProductCart,
+  getCartItems
 } from "../service/product-cart.service";
 
 
@@ -26,8 +26,6 @@ import {
 import {
   findProductByCondition
 } from "../service/product.service";
-
-
 
 
 export async function createPCartHandler(
@@ -60,7 +58,7 @@ export async function createPCartHandler(
     };
 
     const minQtyrule:any = await findRuleByCondition(whereMinQtyCondition);
-    if(minQtyrule.is_apply_on_value < 1) {
+    if(minQtyrule.is_apply_on_value > req.body.quantity1) {
       return res.status(422).send({'error':'Min qty rule halt'});
     }
 
@@ -68,8 +66,11 @@ export async function createPCartHandler(
       "sku":req.body.product_sku ,
     };
 
-    console.log('======condition============> ', whereCondition);
     const product = await findProductByCondition(whereCondition);
+
+   
+
+
     var tax;
 
     if(product.is_taxable == 'standard' && product.discount_price) {
@@ -97,6 +98,39 @@ export async function createPCartHandler(
 
 
     return res.send(productCartItems);
+  } catch (e: any) {
+    logger.error(e);
+    return res.status(409).send(e.message);
+  }
+}
+
+
+
+export async function getPCartDiscountHandler(
+  req: Request<{}, {}, CreatePDiscountCartInput["body"]>,
+  res: Response
+) {
+  try {
+    
+    const cartId = req.body.cart_id ;
+    const isProvision = req.body.is_provision ;
+    const isProvisionVal = req.body.is_provision_val ;
+
+    var addon_amount ;
+
+    if (cartId && isProvision == 'yes' && isProvisionVal == 'standard') {
+      addon_amount = 5;
+    } else if(cartId && isProvision == 'yes' && isProvisionVal == 'premium') {
+      addon_amount = 20;
+    }
+
+    const data = {
+      "addon_provision_amt":addon_amount ,
+      "cart_id":cartId 
+    };
+    
+   return res.send(data);
+
   } catch (e: any) {
     logger.error(e);
     return res.status(409).send(e.message);
